@@ -22,6 +22,7 @@ namespace MochoIndieStudio.DialogSystem.Editor
         {
             this.graphView = owningGraphView;
             title = "Dialog Node";
+            SetHeaderIcon("Packages/com.mochoindiestudio.node-dialog-system/Editor/Icons/icon_dialog.png");
 
             InputPort = CreatePort(Direction.Input, Port.Capacity.Multi, model);
             InputPort.portName = "In";

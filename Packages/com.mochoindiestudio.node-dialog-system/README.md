@@ -16,6 +16,8 @@ not render any dialog UI itself -- wire it up to whatever UI system your project
   portrait sprite), shareable across multiple dialog trees.
 - `Create > MIS Dialog System > Dialog Tree` -- a `DialogTree` asset; double-click it to open the
   node editor. Every new tree starts with its `CharacterDialogNode` root already in place.
+- `DialogCharacter` and `DialogTree` assets each show a custom Project window icon, and the graph
+  editor shows the matching icon in each node's header (`Editor/Icons/`).
 
 ## Runtime
 

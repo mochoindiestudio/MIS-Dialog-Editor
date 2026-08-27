@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## [0.3.0] - 2026-08-27
+
+### Added
+
+- Portrait preview: `CharacterNodeView` shows the assigned character's portrait live in the graph editor, and a custom `DialogCharacterEditor` inspector draws a larger preview below the default fields.
+- Custom Project window icons for `DialogCharacter` and `DialogTree` assets, and matching header icons on `CharacterNodeView`/`DialogNodeView` in the graph editor (`Editor/Icons/`).
+
 ## [0.2.0] - 2026-08-27
 
 ### Added

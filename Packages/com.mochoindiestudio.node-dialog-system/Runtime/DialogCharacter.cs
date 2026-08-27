@@ -7,6 +7,7 @@ namespace MochoIndieStudio.DialogSystem
     /// the root of many <see cref="DialogTree"/> assets.
     /// </summary>
     [CreateAssetMenu(fileName = "New Dialog Character", menuName = "MIS Dialog System/Character")]
+    [Icon("Packages/com.mochoindiestudio.node-dialog-system/Editor/Icons/icon_character_128.png")]
     public sealed class DialogCharacter : ScriptableObject
     {
         [SerializeField]

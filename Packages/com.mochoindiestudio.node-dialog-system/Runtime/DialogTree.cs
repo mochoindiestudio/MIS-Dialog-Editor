@@ -10,6 +10,7 @@ namespace MochoIndieStudio.DialogSystem
     /// exists.
     /// </summary>
     [CreateAssetMenu(fileName = "New Dialog Tree", menuName = "MIS Dialog System/Dialog Tree")]
+    [Icon("Packages/com.mochoindiestudio.node-dialog-system/Editor/Icons/icon_dialog_128.png")]
     public sealed class DialogTree : ScriptableObject
     {
         [SerializeField]
