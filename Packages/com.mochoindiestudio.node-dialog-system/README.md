@@ -27,3 +27,21 @@ runner.Start(myDialogTree);
 // runner.CurrentCharacter, runner.CurrentText, runner.CurrentResponses drive your own UI
 runner.SelectResponse(0);
 ```
+
+## Sample: Basic Demo
+
+Import via Package Manager > MIS Dialog System > Samples > **Basic Demo**. It contains:
+
+- `Data/WhiterunGuard.asset` + `Data/GuardDialog.asset` -- a small Skyrim-flavored example dialog (a
+  Whiterun guard, branching into an "arrow in the knee" backstory or a question about dragons, each
+  ending response firing a `DialogEventTrigger`). `GuardPortrait.png` is a placeholder solid-color
+  sprite, not real game art -- swap in your own.
+- `Scripts/DialogDemoController.cs` -- the example UI wiring described above, built on plain uGUI
+  (`Text`/`Image`/`Button`).
+- `Prefabs/ResponseButton.prefab` -- the response button template the controller instantiates per
+  response.
+- `Scenes/DialogDemo.unity` -- a Camera, Canvas, and an `EventSystem` using
+  `InputSystemUIInputModule` (this repo's Active Input Handling is set to the New Input System only;
+  if your own project uses the old Input Manager only, swap this for `StandaloneInputModule` after
+  importing). Open the scene and press Play to try the conversation; selecting the "arrow in the
+  knee" or dragon responses logs their `DialogEventTrigger.EventId` to the Console.

@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [0.2.0] - 2026-08-27
+
+### Added
+
+- "Basic Demo" sample (`Samples~/Basic Demo/`, declared in `package.json`): a Skyrim-flavored example dialog (a Whiterun guard, branching into an "arrow in the knee" backstory or a question about dragons, each ending response firing a `DialogEventTrigger`), a plain-uGUI `DialogDemoController` wiring `DialogRunner` to `Text`/`Image`/`Button` widgets, a `ResponseButton` prefab, and a ready-to-play `DialogDemo.unity` scene (Camera + Canvas + an `InputSystemUIInputModule`-based `EventSystem`).
+
 ## [0.1.0] - 2026-08-27
 
 ### Added
