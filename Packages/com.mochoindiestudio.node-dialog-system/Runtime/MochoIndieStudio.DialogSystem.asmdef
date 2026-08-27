@@ -1,0 +1,14 @@
+{
+    "name": "MochoIndieStudio.DialogSystem",
+    "rootNamespace": "MochoIndieStudio.DialogSystem",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
