@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [0.4.4] - 2026-08-30
+
+### Fixed
+
+- Committed `.meta` files for the package's `CHANGELOG.md` and `LICENSE.md`. Without them, consuming projects that install the package from Git (an immutable folder, where Unity can't generate metas) logged "has no meta file... The asset will be ignored."
+
 ## [0.4.3] - 2026-08-30
 
 ### Changed
