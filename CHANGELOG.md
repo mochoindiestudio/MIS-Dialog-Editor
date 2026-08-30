@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## [0.4.2] - 2026-08-30
+
+### Changed
+
+- Each response's output port now sits at the end of that response's own row in the graph editor, lining its connector up with the response instead of stacking in the node's top-right output area. Dialog nodes are no longer collapsible (collapsing would hide the in-body ports).
+- Rewrote the README's Runtime section: a complete `DialogRunner` MonoBehaviour example (event subscribe/unsubscribe, rendering, per-response buttons, event handling) and a full API-surface table.
+
 ## [0.4.1] - 2026-08-30
 
 ### Changed

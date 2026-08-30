@@ -21,11 +21,89 @@ not render any dialog UI itself -- wire it up to whatever UI system your project
 
 ## Runtime
 
-```csharp
-var runner = new DialogRunner();
-runner.OnResponseEvent += trigger => { /* dispatch trigger.EventId / trigger.Payload */ };
-runner.Start(myDialogTree);
+`DialogRunner` is a plain C# class (not a `MonoBehaviour`). You create one, point it at a
+`DialogTree` asset, and read its state to drive your own UI. It never touches the UI itself.
 
-// runner.CurrentCharacter, runner.CurrentText, runner.CurrentResponses drive your own UI
-runner.SelectResponse(0);
+### Minimal example
+
+```csharp
+using MochoIndieStudio.DialogSystem;
+using UnityEngine;
+
+public class ExampleDialog : MonoBehaviour
+{
+    // Assign a DialogTree asset (Create > MIS Dialog System > Dialog Tree) in the Inspector.
+    [SerializeField] private DialogTree dialogTree;
+
+    private readonly DialogRunner runner = new DialogRunner();
+
+    private void OnEnable()
+    {
+        runner.OnDialogAdvanced += Render;   // current node changed -> redraw
+        runner.OnDialogEnded    += Close;    // conversation finished
+        runner.OnResponseEvent  += HandleEvent;
+    }
+
+    private void OnDisable()
+    {
+        runner.OnDialogAdvanced -= Render;
+        runner.OnDialogEnded    -= Close;
+        runner.OnResponseEvent  -= HandleEvent;
+    }
+
+    // Call this to begin the conversation (e.g. from an NPC interaction).
+    public void Begin()
+    {
+        runner.Start(dialogTree);
+        if (runner.IsRunning)
+        {
+            Render();
+        }
+    }
+
+    private void Render()
+    {
+        DialogCharacter speaker = runner.CurrentCharacter;   // .DisplayName, .Portrait
+        string line = runner.CurrentText;
+
+        // runner.CurrentResponses is an ordered list; build one button per entry.
+        for (int i = 0; i < runner.CurrentResponses.Count; i++)
+        {
+            string label = runner.CurrentResponses[i].ResponseText;
+            int index = i;                                   // capture for the closure
+            // yourButton.onClick = () => runner.SelectResponse(index);
+        }
+    }
+
+    private void HandleEvent(DialogEventTrigger trigger)
+    {
+        // The package never interprets these -- your game decides what the ids mean.
+        switch (trigger.EventId)
+        {
+            case "quest_start": /* QuestSystem.Start(trigger.Payload); */ break;
+            case "open_door":   /* ... */ break;
+        }
+    }
+
+    private void Close() { /* hide the dialog panel */ }
+}
 ```
+
+### API surface
+
+| Member | Purpose |
+| --- | --- |
+| `Start(DialogTree)` | Begins a conversation at the tree's root character node. Throws on `null`. If the root points at no node, the dialog ends immediately. |
+| `SelectResponse(int index)` | Picks `CurrentResponses[index]`: raises that response's events in order, then advances to its target node (or ends the dialog if it has none). Throws `ArgumentOutOfRangeException` on a bad index; no-op if nothing is running. |
+| `End()` | Ends the conversation early. |
+| `CurrentCharacter` | The `DialogCharacter` for the whole conversation (resolved from the root, so it stays valid at any depth). `null` when not running. |
+| `CurrentText` | Main text of the current node; `""` when not running. |
+| `CurrentResponses` | Ordered `IReadOnlyList<DialogResponse>` for the current node; empty when not running. |
+| `IsRunning` | `true` while a conversation is in progress. |
+| `OnDialogStarted` | Fires once, from inside `Start`. |
+| `OnDialogAdvanced` | Fires each time the current node changes via `SelectResponse`. |
+| `OnDialogEnded` | Fires when the dialog ends (a response with no target, or `End`). |
+| `OnResponseEvent` | `Action<DialogEventTrigger>` -- fires once per event on the selected response, in order, before the node advances. |
+
+`DialogRunner` is deterministic: the same tree plus the same sequence of `SelectResponse` calls
+always walks the same path.

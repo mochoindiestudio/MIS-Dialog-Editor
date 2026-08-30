@@ -25,6 +25,11 @@ namespace MochoIndieStudio.DialogSystem.Editor
             title = "Dialog Node";
             SetHeaderIcon("Packages/com.mochoindiestudio.node-dialog-system/Editor/Icons/icon_dialog.png");
 
+            // Response output ports live on their own row inside the node body (see AddResponseRow),
+            // not in the top-right outputContainer. Collapsing the node would hide that body and with
+            // it every response port, orphaning the edges -- so this node kind is never collapsible.
+            capabilities &= ~Capabilities.Collapsible;
+
             InputPort = CreatePort(Direction.Input, Port.Capacity.Multi, model);
             InputPort.portName = "In";
             inputContainer.Add(InputPort);
@@ -80,7 +85,7 @@ namespace MochoIndieStudio.DialogSystem.Editor
 
         private void AddResponseRow(DialogResponse response)
         {
-            var row = new VisualElement { style = { flexDirection = FlexDirection.Row } };
+            var row = new VisualElement { style = { flexDirection = FlexDirection.Row, alignItems = Align.Center } };
 
             var responseTextField = MakeTextArea(null, response.ResponseText);
             responseTextField.style.flexGrow = 1;
@@ -94,12 +99,14 @@ namespace MochoIndieStudio.DialogSystem.Editor
             var removeButton = new Button(() => RemoveResponse(response)) { text = "X" };
             row.Add(removeButton);
 
-            responsesContainer.Add(row);
-            responseRows[response] = row;
-
+            // The port sits at the end of the response's own row so its connector lines up with the
+            // response it belongs to, instead of stacking in the node's top-right output area.
             var port = CreatePort(Direction.Output, Port.Capacity.Single, response);
             port.portName = string.Empty;
-            outputContainer.Add(port);
+            row.Add(port);
+
+            responsesContainer.Add(row);
+            responseRows[response] = row;
             responsePorts[response] = port;
         }
 
@@ -129,12 +136,12 @@ namespace MochoIndieStudio.DialogSystem.Editor
             if (responsePorts.TryGetValue(response, out var port))
             {
                 graphView.RemoveEdgesConnectedTo(port);
-                outputContainer.Remove(port);
                 responsePorts.Remove(response);
             }
 
             if (responseRows.TryGetValue(response, out var row))
             {
+                // The port lives inside this row, so removing the row removes the port with it.
                 responsesContainer.Remove(row);
                 responseRows.Remove(response);
             }
