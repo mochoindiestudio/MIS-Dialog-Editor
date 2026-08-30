@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using MochoIndieStudio.DialogSystem;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace MochoIndieStudio.DialogSystem.Editor
@@ -28,7 +29,7 @@ namespace MochoIndieStudio.DialogSystem.Editor
             InputPort.portName = "In";
             inputContainer.Add(InputPort);
 
-            var mainTextField = new TextField("Main Text") { multiline = true, value = model.MainText };
+            var mainTextField = MakeTextArea("Main Text", model.MainText);
             mainTextField.RegisterValueChangedCallback(evt => model.MainText = evt.newValue);
             extensionContainer.Add(mainTextField);
 
@@ -47,6 +48,27 @@ namespace MochoIndieStudio.DialogSystem.Editor
             RefreshPorts();
         }
 
+        /// <summary>Minimum on-screen height for a dialog text area, in pixels. Enough for ~3 lines
+        /// so authors see a paragraph of dialog without scrolling.</summary>
+        private const float TextAreaMinHeight = 54f;
+
+        /// <summary>Builds a word-wrapping, vertically-growing multiline <see cref="TextField"/> for
+        /// authoring dialog / response copy (as opposed to the single-line field used for event ids).</summary>
+        private static TextField MakeTextArea(string label, string value)
+        {
+            var field = new TextField(label) { multiline = true, value = value };
+            field.style.whiteSpace = WhiteSpace.Normal;
+            field.style.minHeight = TextAreaMinHeight;
+            var input = field.Q(className: TextField.inputUssClassName);
+            if (input != null)
+            {
+                input.style.unityTextAlign = TextAnchor.UpperLeft;
+                input.style.whiteSpace = WhiteSpace.Normal;
+            }
+
+            return field;
+        }
+
         private void AddResponse()
         {
             var response = new DialogResponse { ResponseText = "New Response" };
@@ -60,7 +82,8 @@ namespace MochoIndieStudio.DialogSystem.Editor
         {
             var row = new VisualElement { style = { flexDirection = FlexDirection.Row } };
 
-            var responseTextField = new TextField { value = response.ResponseText, style = { flexGrow = 1 } };
+            var responseTextField = MakeTextArea(null, response.ResponseText);
+            responseTextField.style.flexGrow = 1;
             responseTextField.RegisterValueChangedCallback(evt => response.ResponseText = evt.newValue);
             row.Add(responseTextField);
 

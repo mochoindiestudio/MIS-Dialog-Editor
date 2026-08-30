@@ -1,6 +1,6 @@
 {
   "name": "com.mochoindiestudio.node-dialog-system",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "displayName": "MIS Dialog System",
   "description": "A node-based dialog editor and runtime engine for Unity. Author branching dialog trees rooted at a Character node, with dialog nodes carrying a main text and a collection of responses that can lead to further nodes and trigger game events. UI-agnostic by design -- the package exposes data and events only, so you can drive whatever dialog UI your game already uses.",
   "unity": "6000.5",

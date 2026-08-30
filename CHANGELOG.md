@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## [0.4.1] - 2026-08-30
+
+### Changed
+
+- Graph editor "Main Text" and response-text fields are now word-wrapping, multi-line text areas (~3 lines tall) instead of single-line fields. The response "Event" id field stays single-line.
+
 ## [0.4.0] - 2026-08-30
 
 ### Added
