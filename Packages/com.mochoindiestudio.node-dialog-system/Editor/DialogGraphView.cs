@@ -110,7 +110,7 @@ namespace MochoIndieStudio.DialogSystem.Editor
 
         private static bool TryGetResponsePort(DialogNodeView view, DialogResponse response, out Port port)
         {
-            foreach (var candidate in view.outputContainer.Query<Port>().ToList())
+            foreach (var candidate in view.Query<Port>().ToList())
             {
                 if (ReferenceEquals(candidate.userData, response))
                 {

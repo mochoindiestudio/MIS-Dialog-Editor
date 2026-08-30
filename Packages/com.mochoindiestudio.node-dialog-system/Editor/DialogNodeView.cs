@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using MochoIndieStudio.DialogSystem;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace MochoIndieStudio.DialogSystem.Editor
@@ -24,11 +25,16 @@ namespace MochoIndieStudio.DialogSystem.Editor
             title = "Dialog Node";
             SetHeaderIcon("Packages/com.mochoindiestudio.node-dialog-system/Editor/Icons/icon_dialog.png");
 
+            // Response output ports live on their own row inside the node body (see AddResponseRow),
+            // not in the top-right outputContainer. Collapsing the node would hide that body and with
+            // it every response port, orphaning the edges -- so this node kind is never collapsible.
+            capabilities &= ~Capabilities.Collapsible;
+
             InputPort = CreatePort(Direction.Input, Port.Capacity.Multi, model);
             InputPort.portName = "In";
             inputContainer.Add(InputPort);
 
-            var mainTextField = new TextField("Main Text") { multiline = true, value = model.MainText };
+            var mainTextField = MakeTextArea("Main Text", model.MainText);
             mainTextField.RegisterValueChangedCallback(evt => model.MainText = evt.newValue);
             extensionContainer.Add(mainTextField);
 
@@ -47,6 +53,27 @@ namespace MochoIndieStudio.DialogSystem.Editor
             RefreshPorts();
         }
 
+        /// <summary>Minimum on-screen height for a dialog text area, in pixels. Enough for ~3 lines
+        /// so authors see a paragraph of dialog without scrolling.</summary>
+        private const float TextAreaMinHeight = 54f;
+
+        /// <summary>Builds a word-wrapping, vertically-growing multiline <see cref="TextField"/> for
+        /// authoring dialog / response copy (as opposed to the single-line field used for event ids).</summary>
+        private static TextField MakeTextArea(string label, string value)
+        {
+            var field = new TextField(label) { multiline = true, value = value };
+            field.style.whiteSpace = WhiteSpace.Normal;
+            field.style.minHeight = TextAreaMinHeight;
+            var input = field.Q(className: TextField.inputUssClassName);
+            if (input != null)
+            {
+                input.style.unityTextAlign = TextAnchor.UpperLeft;
+                input.style.whiteSpace = WhiteSpace.Normal;
+            }
+
+            return field;
+        }
+
         private void AddResponse()
         {
             var response = new DialogResponse { ResponseText = "New Response" };
@@ -58,9 +85,10 @@ namespace MochoIndieStudio.DialogSystem.Editor
 
         private void AddResponseRow(DialogResponse response)
         {
-            var row = new VisualElement { style = { flexDirection = FlexDirection.Row } };
+            var row = new VisualElement { style = { flexDirection = FlexDirection.Row, alignItems = Align.Center } };
 
-            var responseTextField = new TextField { value = response.ResponseText, style = { flexGrow = 1 } };
+            var responseTextField = MakeTextArea(null, response.ResponseText);
+            responseTextField.style.flexGrow = 1;
             responseTextField.RegisterValueChangedCallback(evt => response.ResponseText = evt.newValue);
             row.Add(responseTextField);
 
@@ -71,12 +99,14 @@ namespace MochoIndieStudio.DialogSystem.Editor
             var removeButton = new Button(() => RemoveResponse(response)) { text = "X" };
             row.Add(removeButton);
 
-            responsesContainer.Add(row);
-            responseRows[response] = row;
-
+            // The port sits at the end of the response's own row so its connector lines up with the
+            // response it belongs to, instead of stacking in the node's top-right output area.
             var port = CreatePort(Direction.Output, Port.Capacity.Single, response);
             port.portName = string.Empty;
-            outputContainer.Add(port);
+            row.Add(port);
+
+            responsesContainer.Add(row);
+            responseRows[response] = row;
             responsePorts[response] = port;
         }
 
@@ -106,12 +136,12 @@ namespace MochoIndieStudio.DialogSystem.Editor
             if (responsePorts.TryGetValue(response, out var port))
             {
                 graphView.RemoveEdgesConnectedTo(port);
-                outputContainer.Remove(port);
                 responsePorts.Remove(response);
             }
 
             if (responseRows.TryGetValue(response, out var row))
             {
+                // The port lives inside this row, so removing the row removes the port with it.
                 responsesContainer.Remove(row);
                 responseRows.Remove(response);
             }
