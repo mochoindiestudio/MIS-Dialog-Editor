@@ -1,0 +1,8 @@
+/* Grid background tuning for the dialog graph. Spacing matches DialogGraphView.GridSpacing
+   (36px) so the "snap to grid" toggle lines nodes up with the lines that are drawn. */
+GridBackground {
+    --grid-background-color: #282828;
+    --line-color: rgba(193, 196, 192, 0.1);
+    --thick-line-color: rgba(193, 196, 192, 0.2);
+    --spacing: 36;
+}
