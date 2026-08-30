@@ -263,7 +263,9 @@ namespace MochoIndieStudio.DialogSystem.Editor
             }
         }
 
-        private void MarkDirty()
+        /// <summary>Flags the backing <see cref="DialogTree"/> asset as needing to be saved. Called
+        /// from node views too (e.g. after a resize), so it is not private.</summary>
+        internal void MarkDirty()
         {
             EditorUtility.SetDirty(tree);
         }

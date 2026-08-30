@@ -16,6 +16,9 @@ namespace MochoIndieStudio.DialogSystem
         [SerializeField]
         private Vector2 editorPosition;
 
+        [SerializeField]
+        private float editorWidth;
+
         protected DialogGraphNode()
         {
             id = Guid.NewGuid().ToString("N");
@@ -30,6 +33,15 @@ namespace MochoIndieStudio.DialogSystem
         {
             get => editorPosition;
             set => editorPosition = value;
+        }
+
+        /// <summary>User-set width of the node's view in the graph editor, in canvas pixels. Zero
+        /// means "not resized yet" -- the view then auto-sizes to its content. Editor-only concern,
+        /// stored with the data like <see cref="EditorPosition"/>.</summary>
+        public float EditorWidth
+        {
+            get => editorWidth;
+            set => editorWidth = value;
         }
     }
 }

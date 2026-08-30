@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here.
 
+## [0.5.0] - 2026-08-30
+
+### Added
+
+- Graph editor nodes are resizable (drag any edge/corner). The chosen width is saved per node in `DialogGraphNode.EditorWidth` and restored on reopen; height stays auto-fit to content.
+
+### Changed
+
+- Response rows in the graph editor no longer show the "Event" field -- event triggers are edited in the asset's Inspector. Removes the half-shown control (the payload was never editable there anyway).
+- Response delete buttons use the `icon_delete` sprite (now under `Editor/Icons/`) instead of a text "X".
+
 ## [0.4.4] - 2026-08-30
 
 ### Fixed

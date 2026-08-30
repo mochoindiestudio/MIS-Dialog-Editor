@@ -21,11 +21,27 @@ namespace MochoIndieStudio.DialogSystem.Editor
 
         private readonly DialogGraphView graph;
 
+        /// <summary>Lower bound for a resized node's width, in canvas pixels. Stops the node being
+        /// dragged down to an unusable sliver.</summary>
+        private const float MinNodeWidth = 180f;
+
         protected DialogGraphNodeView(DialogGraphNode model, DialogGraphView graph)
         {
             Model = model;
             this.graph = graph;
             SetPosition(new Rect(model.EditorPosition, Vector2.zero));
+
+            style.minWidth = MinNodeWidth;
+            if (Model.EditorWidth > 0f)
+            {
+                style.width = Model.EditorWidth;
+            }
+
+            // Drag handles on every edge/corner; ResizableElement writes style.width/height back and
+            // fires GeometryChangedEvent, which is where OnGeometryChanged persists the new width.
+            capabilities |= Capabilities.Resizable;
+            hierarchy.Add(new ResizableElement());
+
             RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
         }
 
@@ -46,6 +62,17 @@ namespace MochoIndieStudio.DialogSystem.Editor
         private void OnGeometryChanged(GeometryChangedEvent evt)
         {
             Model.EditorPosition = GetPosition().position;
+
+            // Persist width only (height is left to auto-fit the node's content). The stored width is
+            // reapplied on reopen, so a node reappears at whatever width it was last shown/resized to.
+            // ResizableElement changes the width outside of graphViewChanged, so mark the asset dirty
+            // here when it actually changes -- otherwise a resize-only edit wouldn't be saved.
+            var width = evt.newRect.width;
+            if (width > 0f && !Mathf.Approximately(width, Model.EditorWidth))
+            {
+                Model.EditorWidth = width;
+                graph?.MarkDirty();
+            }
         }
 
         protected static Port CreatePort(Direction direction, Port.Capacity capacity, object userData)

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MochoIndieStudio.DialogSystem;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -8,10 +9,13 @@ namespace MochoIndieStudio.DialogSystem.Editor
 {
     /// <summary>
     /// View for a <see cref="DialogNode"/>: its main text, plus one output port per
-    /// <see cref="DialogResponse"/> (with add/remove controls).
+    /// <see cref="DialogResponse"/> (with add/remove controls). A response's event triggers are
+    /// edited in the asset's Inspector, not here.
     /// </summary>
     public sealed class DialogNodeView : DialogGraphNodeView
     {
+        private const string DeleteIconPath = "Packages/com.mochoindiestudio.node-dialog-system/Editor/Icons/icon_delete.png";
+
         private readonly DialogGraphView graphView;
         private readonly VisualElement responsesContainer;
         private readonly Dictionary<DialogResponse, Port> responsePorts = new Dictionary<DialogResponse, Port>();
@@ -58,7 +62,7 @@ namespace MochoIndieStudio.DialogSystem.Editor
         private const float TextAreaMinHeight = 54f;
 
         /// <summary>Builds a word-wrapping, vertically-growing multiline <see cref="TextField"/> for
-        /// authoring dialog / response copy (as opposed to the single-line field used for event ids).</summary>
+        /// authoring dialog / response copy.</summary>
         private static TextField MakeTextArea(string label, string value)
         {
             var field = new TextField(label) { multiline = true, value = value };
@@ -92,12 +96,7 @@ namespace MochoIndieStudio.DialogSystem.Editor
             responseTextField.RegisterValueChangedCallback(evt => response.ResponseText = evt.newValue);
             row.Add(responseTextField);
 
-            var eventIdField = new TextField("Event") { value = GetEventId(response) };
-            eventIdField.RegisterValueChangedCallback(evt => SetEventId(response, evt.newValue));
-            row.Add(eventIdField);
-
-            var removeButton = new Button(() => RemoveResponse(response)) { text = "X" };
-            row.Add(removeButton);
+            row.Add(MakeDeleteButton(() => RemoveResponse(response)));
 
             // The port sits at the end of the response's own row so its connector lines up with the
             // response it belongs to, instead of stacking in the node's top-right output area.
@@ -110,25 +109,39 @@ namespace MochoIndieStudio.DialogSystem.Editor
             responsePorts[response] = port;
         }
 
-        private static string GetEventId(DialogResponse response)
+        /// <summary>A compact icon-only button (the delete glyph from Editor/Icons) used to remove a
+        /// response row. Falls back to a text "X" if the icon asset can't be loaded.</summary>
+        private static Button MakeDeleteButton(System.Action onClick)
         {
-            return response.Events.Count > 0 ? response.Events[0].EventId : string.Empty;
-        }
-
-        private static void SetEventId(DialogResponse response, string eventId)
-        {
-            if (string.IsNullOrEmpty(eventId))
+            var button = new Button(onClick)
             {
-                response.Events.Clear();
-                return;
+                tooltip = "Delete response",
+                style =
+                {
+                    width = 20f,
+                    height = 20f,
+                    paddingLeft = 2f,
+                    paddingRight = 2f,
+                    alignSelf = Align.Center
+                }
+            };
+
+            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(DeleteIconPath);
+            if (icon != null)
+            {
+                button.Add(new Image
+                {
+                    image = icon,
+                    scaleMode = ScaleMode.ScaleToFit,
+                    style = { flexGrow = 1 }
+                });
+            }
+            else
+            {
+                button.text = "X";
             }
 
-            if (response.Events.Count == 0)
-            {
-                response.Events.Add(new DialogEventTrigger());
-            }
-
-            response.Events[0].EventId = eventId;
+            return button;
         }
 
         private void RemoveResponse(DialogResponse response)
