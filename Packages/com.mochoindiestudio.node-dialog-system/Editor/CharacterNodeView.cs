@@ -19,7 +19,7 @@ namespace MochoIndieStudio.DialogSystem.Editor
         /// <summary>The single output port leading to the first <see cref="DialogNode"/>.</summary>
         public Port OutputPort { get; }
 
-        public CharacterNodeView(CharacterDialogNode model) : base(model)
+        public CharacterNodeView(CharacterDialogNode model, DialogGraphView owningGraphView) : base(model, owningGraphView)
         {
             title = "Character (Root)";
             AddToClassList("dialog-root-node");

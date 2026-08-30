@@ -13,19 +13,11 @@ MonoBehaviour:
   m_Name: Guard Dialog
   m_EditorClassIdentifier: MochoIndieStudio.DialogSystem::MochoIndieStudio.DialogSystem.DialogTree
   rootNode:
-    id: 15e10c9073c44966a60bde546ed3fa22
-    editorPosition: {x: 76, y: 182}
-    character: {fileID: 11400000, guid: 8cfaa846a840a5b499036d986aab60b3, type: 2}
-    nextNodeId: 384b859c5a054345bdc556b340659f42
-  nodes:
-  - rid: 1954627727020523748
+    id: 217759b112f748e49aeb29fe0aa5f576
+    editorPosition: {x: 0, y: 0}
+    character: {fileID: 0}
+    nextNodeId: 
+  nodes: []
   references:
     version: 2
-    RefIds:
-    - rid: 1954627727020523748
-      type: {class: DialogNode, ns: MochoIndieStudio.DialogSystem, asm: MochoIndieStudio.DialogSystem}
-      data:
-        id: 384b859c5a054345bdc556b340659f42
-        editorPosition: {x: 493, y: 182}
-        mainText: Halt! Where do you think you're going?
-        responses: []
+    RefIds: []

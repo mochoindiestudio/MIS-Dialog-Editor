@@ -15,8 +15,22 @@ namespace MochoIndieStudio.DialogSystem.Editor
     /// </summary>
     public sealed class DialogGraphView : GraphView
     {
+        /// <summary>Editor canvas grid pitch, in canvas pixels. Matches <c>--spacing</c> in DialogGraphView.uss.</summary>
+        public const float GridSpacing = 36f;
+
+        /// <summary>Horizontal gap left between the current right-most node and a newly created one,
+        /// so fresh nodes never spawn on top of existing ones.</summary>
+        private const float NewNodeSpacing = 10f;
+
+        private const string StyleSheetPath = "Packages/com.mochoindiestudio.node-dialog-system/Editor/DialogGraphView.uss";
+
         private readonly DialogTree tree;
         private readonly Dictionary<string, DialogGraphNodeView> nodeViewsById = new Dictionary<string, DialogGraphNodeView>();
+
+        private bool didFrameOrigin;
+
+        /// <summary>When true, node positions are quantised to <see cref="GridSpacing"/> as they move.</summary>
+        public bool SnapToGrid { get; set; }
 
         public DialogGraphView(DialogTree dialogTree)
         {
@@ -31,16 +45,39 @@ namespace MochoIndieStudio.DialogSystem.Editor
             grid.StretchToParentSize();
             Insert(0, grid);
 
-            nodeCreationRequest = context => CreateDialogNode(contentViewContainer.WorldToLocal(this.WorldToLocal(context.screenMousePosition)));
+            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(StyleSheetPath);
+            if (styleSheet != null)
+            {
+                styleSheets.Add(styleSheet);
+            }
+
+            // New nodes are placed relative to the existing layout, not the mouse, so they land
+            // predictably next to the graph instead of wherever the pointer happened to be.
+            nodeCreationRequest = _ => CreateDialogNode();
 
             graphViewChanged += OnGraphViewChanged;
 
             PopulateFromTree();
+
+            // Centre the viewport on the canvas origin (0,0) once the view has a real size.
+            RegisterCallback<GeometryChangedEvent>(FrameOriginOnce);
+        }
+
+        private void FrameOriginOnce(GeometryChangedEvent evt)
+        {
+            if (didFrameOrigin || layout.width <= 0f || layout.height <= 0f)
+            {
+                return;
+            }
+
+            didFrameOrigin = true;
+            UnregisterCallback<GeometryChangedEvent>(FrameOriginOnce);
+            UpdateViewTransform(new Vector3(layout.width * 0.5f, layout.height * 0.5f, 0f), Vector3.one);
         }
 
         private void PopulateFromTree()
         {
-            var rootView = new CharacterNodeView(tree.RootNode);
+            var rootView = new CharacterNodeView(tree.RootNode, this);
             AddElement(rootView);
             nodeViewsById[tree.RootNode.Id] = rootView;
 
@@ -102,9 +139,9 @@ namespace MochoIndieStudio.DialogSystem.Editor
             AddElement(edge);
         }
 
-        private void CreateDialogNode(Vector2 position)
+        private void CreateDialogNode()
         {
-            var node = new DialogNode { EditorPosition = position };
+            var node = new DialogNode { EditorPosition = NextNodePosition() };
             tree.Nodes.Add(node);
 
             var nodeView = new DialogNodeView(node, this);
@@ -112,6 +149,36 @@ namespace MochoIndieStudio.DialogSystem.Editor
             nodeViewsById[node.Id] = nodeView;
 
             MarkDirty();
+        }
+
+        /// <summary>Position for the next new node: the canvas origin when the graph is empty of
+        /// dialog nodes, otherwise just to the right of the current right-most node so they don't
+        /// overlap. Snapped to the grid when <see cref="SnapToGrid"/> is on.</summary>
+        private Vector2 NextNodePosition()
+        {
+            var position = Vector2.zero;
+            var rightMost = float.NegativeInfinity;
+
+            foreach (var view in nodeViewsById.Values)
+            {
+                var rect = view.GetPosition();
+                var width = view.resolvedStyle.width;
+                var right = rect.x + (float.IsNaN(width) || width <= 0f ? 0f : width);
+                if (right > rightMost)
+                {
+                    rightMost = right;
+                    position = new Vector2(right + NewNodeSpacing, rect.y);
+                }
+            }
+
+            return SnapToGrid ? Snap(position) : position;
+        }
+
+        private static Vector2 Snap(Vector2 position)
+        {
+            return new Vector2(
+                Mathf.Round(position.x / GridSpacing) * GridSpacing,
+                Mathf.Round(position.y / GridSpacing) * GridSpacing);
         }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)

@@ -19,11 +19,28 @@ namespace MochoIndieStudio.DialogSystem.Editor
         /// <summary>The node's single input port (null for the root character node, which nothing points to).</summary>
         public Port InputPort { get; protected set; }
 
-        protected DialogGraphNodeView(DialogGraphNode model)
+        private readonly DialogGraphView graph;
+
+        protected DialogGraphNodeView(DialogGraphNode model, DialogGraphView graph)
         {
             Model = model;
+            this.graph = graph;
             SetPosition(new Rect(model.EditorPosition, Vector2.zero));
             RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+        }
+
+        /// <summary>Every drag, box-move and programmatic move routes through here, so this is where
+        /// grid snapping is applied and where the position is written back to the model.</summary>
+        public override void SetPosition(Rect newPos)
+        {
+            if (graph != null && graph.SnapToGrid)
+            {
+                newPos.x = Mathf.Round(newPos.x / DialogGraphView.GridSpacing) * DialogGraphView.GridSpacing;
+                newPos.y = Mathf.Round(newPos.y / DialogGraphView.GridSpacing) * DialogGraphView.GridSpacing;
+            }
+
+            base.SetPosition(newPos);
+            Model.EditorPosition = newPos.position;
         }
 
         private void OnGeometryChanged(GeometryChangedEvent evt)

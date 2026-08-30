@@ -1,6 +1,7 @@
 using MochoIndieStudio.DialogSystem;
 using UnityEditor;
 using UnityEditor.Callbacks;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -43,8 +44,21 @@ namespace MochoIndieStudio.DialogSystem.Editor
             {
                 name = "Dialog Graph View"
             };
-            graphView.StretchToParentSize();
+            rootVisualElement.Add(BuildToolbar());
+
+            graphView.style.flexGrow = 1;
             rootVisualElement.Add(graphView);
+        }
+
+        private Toolbar BuildToolbar()
+        {
+            var toolbar = new Toolbar();
+
+            var snapToggle = new ToolbarToggle { text = "Snap to Grid", value = graphView.SnapToGrid };
+            snapToggle.RegisterValueChangedCallback(evt => graphView.SnapToGrid = evt.newValue);
+            toolbar.Add(snapToggle);
+
+            return toolbar;
         }
 
         private void OnEnable()

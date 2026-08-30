@@ -18,7 +18,7 @@ namespace MochoIndieStudio.DialogSystem.Editor
 
         public new DialogNode Model => (DialogNode)base.Model;
 
-        public DialogNodeView(DialogNode model, DialogGraphView owningGraphView) : base(model)
+        public DialogNodeView(DialogNode model, DialogGraphView owningGraphView) : base(model, owningGraphView)
         {
             this.graphView = owningGraphView;
             title = "Dialog Node";

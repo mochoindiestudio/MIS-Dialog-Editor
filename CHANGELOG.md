@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented here.
 
+## [0.4.0] - 2026-08-30
+
+### Added
+
+- Graph editor now centers its viewport on the canvas origin (0,0) when opened.
+- 36x36px grid background in the graph editor (`Editor/DialogGraphView.uss`), plus a "Snap to Grid" toggle in a new window toolbar that quantizes node positions to the grid while dragging.
+
+### Changed
+
+- New dialog nodes spawn just to the right of the current right-most node instead of at a mouse-derived position, so they no longer appear at random offsets or off-screen.
+- Removed the "Basic Demo" sample (`Samples~/Basic Demo/`, `samples` entry in `package.json`, and its README section).
+
 ## [0.3.0] - 2026-08-27
 
 ### Added
