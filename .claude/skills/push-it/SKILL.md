@@ -52,8 +52,10 @@ Update `"version"` in `package.json` to the new value.
 
 ## 4. Update CHANGELOG.md
 
-`CHANGELOG.md` lives at the repo root, following [Keep a Changelog](https://keepachangelog.com)
-conventions:
+`CHANGELOG.md` lives at the **package root**
+(`Packages/com.mochoindiestudio.node-dialog-system/CHANGELOG.md`) so Unity's Package Manager surfaces
+it as the "Changelog" tab for Git-installed consumers. It follows
+[Keep a Changelog](https://keepachangelog.com) conventions:
 
 ```markdown
 # Changelog

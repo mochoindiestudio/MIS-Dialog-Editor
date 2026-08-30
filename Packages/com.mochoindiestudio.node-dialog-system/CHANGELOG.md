@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here.
 
+## [0.4.3] - 2026-08-30
+
+### Changed
+
+- Moved `CHANGELOG.md` from the repo root into the package root so Unity's Package Manager shows it as the "Changelog" tab for Git-installed consumers.
+
+### Added
+
+- `LICENSE.md` (MIT) at the package root, plus `"license": "MIT"` in `package.json`, so the Package Manager "Licenses" link works.
+
 ## [0.4.2] - 2026-08-30
 
 ### Changed
