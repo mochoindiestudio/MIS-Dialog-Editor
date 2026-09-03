@@ -2,6 +2,56 @@
 
 All notable changes to this project are documented here.
 
+## [0.7.0] - 2026-09-03
+
+### Added
+
+- **`DialogEventTrigger.EventId` is now a picked value.** The field carries `[SignalId]` (from
+  `com.mochoindiestudio.signals` 0.2.0), so authoring a response event offers a searchable list of
+  ids declared across the project (`[SignalIdProvider]` classes, `SignalCatalog` assets). Still free
+  text; the stored value is unchanged, so existing dialog assets need no migration.
+
+### Changed
+
+- Depends on `com.mochoindiestudio.signals` **0.2.0** (was 0.1.0), consumed from
+  `https://github.com/mochoindiestudio/MIS-Signals.git#v0.2.0`. Runtime asmdef also references
+  `MochoIndieStudio.Signals.Authoring`.
+
+## [0.6.0] - 2026-09-03
+
+### Added
+
+- **`DialogRunner.PublishEventsToSignalBus`** (`bool`, default `false`). When enabled, each
+  `DialogEventTrigger` on a selected response is also reported to the shared **MIS Signals** bus as
+  `MisSignals.Report(EventId, Payload)` — in addition to `OnResponseEvent` — so a MIS Quest or
+  Inventory system can react to a dialog choice with no game-side glue. Left off, the runtime behaves
+  exactly as before.
+
+### Changed
+
+- `package.json` now declares a dependency on `com.mochoindiestudio.signals` (>= 0.1.0); the runtime
+  asmdef references `MochoIndieStudio.Signals`. It is consumed from
+  `https://github.com/mochoindiestudio/MIS-Signals.git#v0.1.0`. UPM does not resolve a git package's
+  dependencies — a game installing this package must add the signals git URL to its own manifest too
+  (see the README).
+
+## [0.5.0] - 2026-08-30
+
+### Added
+
+- Graph editor nodes are resizable (drag any edge/corner). The chosen width is saved per node in `DialogGraphNode.EditorWidth` and restored on reopen; height stays auto-fit to content.
+
+### Changed
+
+- Response rows in the graph editor no longer show the "Event" field -- event triggers are edited in the asset's Inspector. Removes the half-shown control (the payload was never editable there anyway).
+- Response delete buttons use the `icon_delete` sprite (now under `Editor/Icons/`) instead of a text "X".
+
+## [0.4.4] - 2026-08-30
+
+### Fixed
+
+- Committed `.meta` files for the package's `CHANGELOG.md` and `LICENSE.md`. Without them, consuming projects that install the package from Git (an immutable folder, where Unity can't generate metas) logged "has no meta file... The asset will be ignored."
+
 ## [0.4.3] - 2026-08-30
 
 ### Changed

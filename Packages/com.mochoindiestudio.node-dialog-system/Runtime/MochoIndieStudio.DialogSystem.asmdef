@@ -1,7 +1,10 @@
 {
     "name": "MochoIndieStudio.DialogSystem",
     "rootNamespace": "MochoIndieStudio.DialogSystem",
-    "references": [],
+    "references": [
+        "MochoIndieStudio.Signals",
+        "MochoIndieStudio.Signals.Authoring"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

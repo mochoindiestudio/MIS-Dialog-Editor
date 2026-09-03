@@ -1,4 +1,5 @@
 ﻿<Solution>
   <Project Path="MochoIndieStudio.DialogSystem.Editor.csproj" />
   <Project Path="MochoIndieStudio.DialogSystem.csproj" />
+  <Project Path="MochoIndieStudio.Signals.csproj" />
 </Solution>
