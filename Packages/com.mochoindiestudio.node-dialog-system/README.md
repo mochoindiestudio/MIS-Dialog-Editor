@@ -15,6 +15,16 @@ Its one dependency is **`com.mochoindiestudio.signals`** (the shared MIS Signals
 Inventory system with no game-side glue. Left off (the default), the package behaves exactly as
 before -- pure data and events.
 
+## Install
+
+Add both to a project's `Packages/manifest.json` -- UPM does not resolve a git package's
+dependencies for you:
+
+```jsonc
+"com.mochoindiestudio.node-dialog-system": "https://github.com/mochoindiestudio/MIS-Dialog-Editor.git?path=/Packages/com.mochoindiestudio.node-dialog-system#v0.6.0",
+"com.mochoindiestudio.signals":            "https://github.com/mochoindiestudio/MIS-Signals.git#v0.1.0"
+```
+
 ## Authoring
 
 - `Create > MIS Dialog System > Character` -- a reusable `DialogCharacter` asset (display name +

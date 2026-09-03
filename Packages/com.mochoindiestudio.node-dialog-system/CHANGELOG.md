@@ -15,8 +15,10 @@ All notable changes to this project are documented here.
 ### Changed
 
 - `package.json` now declares a dependency on `com.mochoindiestudio.signals` (>= 0.1.0); the runtime
-  asmdef references `MochoIndieStudio.Signals`. `Packages/manifest.json` points at it as
-  `file:../../MIS Signals` for local development.
+  asmdef references `MochoIndieStudio.Signals`. It is consumed from
+  `https://github.com/mochoindiestudio/MIS-Signals.git#v0.1.0`. UPM does not resolve a git package's
+  dependencies — a game installing this package must add the signals git URL to its own manifest too
+  (see the README).
 
 ## [0.5.0] - 2026-08-30
 
