@@ -2,6 +2,22 @@
 
 All notable changes to this project are documented here.
 
+## [0.6.0] - 2026-09-03
+
+### Added
+
+- **`DialogRunner.PublishEventsToSignalBus`** (`bool`, default `false`). When enabled, each
+  `DialogEventTrigger` on a selected response is also reported to the shared **MIS Signals** bus as
+  `MisSignals.Report(EventId, Payload)` — in addition to `OnResponseEvent` — so a MIS Quest or
+  Inventory system can react to a dialog choice with no game-side glue. Left off, the runtime behaves
+  exactly as before.
+
+### Changed
+
+- `package.json` now declares a dependency on `com.mochoindiestudio.signals` (>= 0.1.0); the runtime
+  asmdef references `MochoIndieStudio.Signals`. `Packages/manifest.json` points at it as
+  `file:../../MIS Signals` for local development.
+
 ## [0.5.0] - 2026-08-30
 
 ### Added

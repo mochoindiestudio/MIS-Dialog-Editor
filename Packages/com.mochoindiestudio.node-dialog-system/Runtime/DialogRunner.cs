@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MochoIndieStudio.Signals;
 
 namespace MochoIndieStudio.DialogSystem
 {
@@ -15,6 +16,16 @@ namespace MochoIndieStudio.DialogSystem
 
         private DialogTree tree;
         private DialogNode currentNode;
+
+        /// <summary>
+        /// When <c>true</c>, every <see cref="DialogEventTrigger"/> on a selected response is also
+        /// reported to the shared <see cref="MisSignals"/> bus
+        /// (<c>MisSignals.Report(trigger.EventId, trigger.Payload)</c>) — in addition to being raised
+        /// on <see cref="OnResponseEvent"/>. This lets a MIS Quest System objective (or anything else
+        /// on the bus) react to a dialog choice without the game wiring the two packages together.
+        /// Default <c>false</c>: the package stays a pure data/event source unless you opt in.
+        /// </summary>
+        public bool PublishEventsToSignalBus { get; set; }
 
         /// <summary>The character this conversation belongs to, resolved from the tree's root and
         /// valid for the whole conversation regardless of the current node's depth.</summary>
@@ -81,7 +92,13 @@ namespace MochoIndieStudio.DialogSystem
             var response = responses[responseIndex];
             for (int i = 0; i < response.Events.Count; i++)
             {
-                OnResponseEvent?.Invoke(response.Events[i]);
+                DialogEventTrigger trigger = response.Events[i];
+                OnResponseEvent?.Invoke(trigger);
+
+                if (PublishEventsToSignalBus && trigger != null && !string.IsNullOrEmpty(trigger.EventId))
+                {
+                    MisSignals.Report(trigger.EventId, trigger.Payload);
+                }
             }
 
             currentNode = tree.GetNode(response.TargetNodeId) as DialogNode;

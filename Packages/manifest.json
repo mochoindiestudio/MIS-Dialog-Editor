@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main",
+    "com.mochoindiestudio.signals": "file:../../MIS Signals",
     "com.unity.ai.navigation": "2.0.14",
     "com.unity.ide.visualstudio": "2.0.28",
     "com.unity.inputsystem": "1.20.0",

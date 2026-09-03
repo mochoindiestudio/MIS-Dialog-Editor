@@ -24,6 +24,10 @@ No Assets-side duplicate of package scripts.
 - Each response can lead to another dialog node, recursively, to arbitrary depth.
 - Responses can trigger events for game-logic integration (quest start/end, unlocking a door, marking
   an NPC known, etc.) — the package defines the hook surface, the consuming game supplies listeners.
+  Since **v0.6.0** the package also depends on `com.mochoindiestudio.signals` (the shared MIS Signals
+  bus): `DialogRunner.PublishEventsToSignalBus` (default `false`) optionally forwards each response
+  event to `MisSignals.Report(EventId, Payload)` so a MIS Quest/Inventory system reacts with no
+  game-side glue.
 - **UI-agnostic**: the package must not be tied to specific UI controls/frameworks. Its runtime API
   should read as pull/subscribe data (current node text, responses, character portrait; "select
   response N" advances state), never anything that renders UI itself.

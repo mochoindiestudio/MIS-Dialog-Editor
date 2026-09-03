@@ -10,6 +10,11 @@ and/or fire a `DialogEventTrigger` (an `EventId`/`Payload` pair) for your game l
 The package is UI-agnostic: it exposes data and `event Action` hooks (`DialogRunner`) only. It does
 not render any dialog UI itself -- wire it up to whatever UI system your project already uses.
 
+Its one dependency is **`com.mochoindiestudio.signals`** (the shared MIS Signals bus): opt in with
+`DialogRunner.PublishEventsToSignalBus = true` and response events flow straight to a MIS Quest or
+Inventory system with no game-side glue. Left off (the default), the package behaves exactly as
+before -- pure data and events.
+
 ## Authoring
 
 - `Create > MIS Dialog System > Character` -- a reusable `DialogCharacter` asset (display name +
@@ -85,6 +90,9 @@ public class ExampleDialog : MonoBehaviour
         }
     }
 
+    // ...or skip HandleEvent entirely and let the runner publish to the shared MIS Signals bus:
+    //   runner.PublishEventsToSignalBus = true;   // then a MIS Quest System objective sees it directly
+
     private void Close() { /* hide the dialog panel */ }
 }
 ```
@@ -104,6 +112,7 @@ public class ExampleDialog : MonoBehaviour
 | `OnDialogAdvanced` | Fires each time the current node changes via `SelectResponse`. |
 | `OnDialogEnded` | Fires when the dialog ends (a response with no target, or `End`). |
 | `OnResponseEvent` | `Action<DialogEventTrigger>` -- fires once per event on the selected response, in order, before the node advances. |
+| `PublishEventsToSignalBus` | `bool` (default `false`). When `true`, each response event is also reported to the shared `MisSignals` bus (`com.mochoindiestudio.signals`) as `Report(EventId, Payload)`, so a MIS Quest / Inventory system reacts without game-side glue. |
 
 `DialogRunner` is deterministic: the same tree plus the same sequence of `SelectResponse` calls
 always walks the same path.
