@@ -2,6 +2,21 @@
 
 All notable changes to this project are documented here.
 
+## [0.7.0] - 2026-09-03
+
+### Added
+
+- **`DialogEventTrigger.EventId` is now a picked value.** The field carries `[SignalId]` (from
+  `com.mochoindiestudio.signals` 0.2.0), so authoring a response event offers a searchable list of
+  ids declared across the project (`[SignalIdProvider]` classes, `SignalCatalog` assets). Still free
+  text; the stored value is unchanged, so existing dialog assets need no migration.
+
+### Changed
+
+- Depends on `com.mochoindiestudio.signals` **0.2.0** (was 0.1.0), consumed from
+  `https://github.com/mochoindiestudio/MIS-Signals.git#v0.2.0`. Runtime asmdef also references
+  `MochoIndieStudio.Signals.Authoring`.
+
 ## [0.6.0] - 2026-09-03
 
 ### Added

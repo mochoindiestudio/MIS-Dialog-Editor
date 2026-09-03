@@ -21,8 +21,8 @@ Add both to a project's `Packages/manifest.json` -- UPM does not resolve a git p
 dependencies for you:
 
 ```jsonc
-"com.mochoindiestudio.node-dialog-system": "https://github.com/mochoindiestudio/MIS-Dialog-Editor.git?path=/Packages/com.mochoindiestudio.node-dialog-system#v0.6.0",
-"com.mochoindiestudio.signals":            "https://github.com/mochoindiestudio/MIS-Signals.git#v0.1.0"
+"com.mochoindiestudio.node-dialog-system": "https://github.com/mochoindiestudio/MIS-Dialog-Editor.git?path=/Packages/com.mochoindiestudio.node-dialog-system#v0.7.0",
+"com.mochoindiestudio.signals":            "https://github.com/mochoindiestudio/MIS-Signals.git#v0.2.0"
 ```
 
 ## Authoring
